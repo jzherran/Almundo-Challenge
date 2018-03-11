@@ -14,9 +14,11 @@ In this implementation was create a log with descriptions in the most relevant c
 
 ## Getting Started
 
+The following log shows the execution of `Dispatcher` service for a configuration of 10 employees who concurrently receive 30 calls with a random value between 5 and 10 seconds in duration.
+
 ![Example execution](/info/log.gif)
 
-* Maven is necessary for complite this project.
+* Maven is necessary to compile this project.
 * Clone the project and use your IDE for open it.
 * Run maven clean install inside of the main path of the project.
 ```
