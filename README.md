@@ -32,7 +32,7 @@ mvn clean install
 * [Java 1.8](https://java.com/) - Language and version of compilation
 * [Maven](https://maven.apache.org/) - Dependency Management
 
-## Libraries:
+## Libraries
   
 * [SLF4J](https://mvnrepository.com/artifact/org.slf4j) - Logger
 * [Apache commons lang](https://mvnrepository.com/artifact/org.apache.commons/commons-lang3) - Commons utilities
