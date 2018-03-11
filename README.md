@@ -2,6 +2,8 @@
 
 The main idea of this project is resolve a problem with concurrency in a common environment (Call Center), the problem is to receive multiple calls with a limited number of employees.
 
+![Model of solution](/info/model.png)
+
 ## Getting Started
 
 Create a copy of this repository and open with your IDE, you need a Maven for compilation.
