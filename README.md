@@ -12,6 +12,8 @@ The proposed solution is developed using mainly the threads in java:
 
 ## Getting Started
 
+![Example execution](/info/log.gif)
+
 Create a copy of this repository and open with your IDE, you need a Maven for compilation.
 
 When you are ready for start go to the folder and run the follow command:
