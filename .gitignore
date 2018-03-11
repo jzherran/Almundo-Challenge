@@ -63,6 +63,7 @@ modules.xml
 .idea/compiler.xml
 .idea/misc.xml
 .idea/modiles.xml
+.idea/vcs.xml
 *.ipr
 
 # Sonarlint plugin
