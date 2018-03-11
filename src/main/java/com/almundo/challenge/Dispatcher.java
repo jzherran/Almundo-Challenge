@@ -42,6 +42,7 @@ public class Dispatcher implements Runnable {
   /** Control for enable/disable the dispatch of calls */
   private boolean dispatcherRunning;
 
+  /** Control for show log when there are no employees available */
   private boolean employeesAvailable;
 
   /** Executor for send a {@link Call} to an {@link Employee} */
@@ -57,8 +58,7 @@ public class Dispatcher implements Runnable {
     this.dequeEmployees = new ConcurrentLinkedDeque<>(employees);
     this.dispatcherRunning = false;
     this.employeesAvailable = true;
-    this.executor = new ThreadPoolExecutor(CAPACITY_CALLS, CAPACITY_CALLS,
-        60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    this.executor = Executors.newFixedThreadPool(CAPACITY_CALLS);
   }
 
   /**

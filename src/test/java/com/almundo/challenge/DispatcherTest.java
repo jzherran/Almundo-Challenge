@@ -60,7 +60,7 @@ public class DispatcherTest {
     when(mockEmployee.getStatus()).thenReturn(EmployeeStatus.WAIT_FOR_CALL);
     doThrow(new RuntimeException()).when(mockEmployee).startRespondCall(any(Call.class));
 
-    startCalls(calls, 5);
+    startCalls(calls, 10);
 
     dispatcher.stopDispatchingCalls();
     assertEquals(5, dispatcher.getDequeCalls().size());

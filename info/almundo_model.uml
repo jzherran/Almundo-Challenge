@@ -3,16 +3,67 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="386.0" y="0.0">com.almundo.challenge.model.Employee</node>
-    <node x="0.0" y="0.0">com.almundo.challenge.Dispatcher</node>
-    <node x="260.0" y="429.0">com.almundo.challenge.enumerate.EmployeeRole</node>
-    <node x="0.0" y="429.0">com.almundo.challenge.model.Call</node>
-    <node x="428.0" y="429.0">com.almundo.challenge.enumerate.EmployeeStatus</node>
+    <node x="60.490740740740705" y="312.0">com.almundo.challenge.model.Employee</node>
+    <node x="166.39351851851848" y="78.5">com.almundo.challenge.enumerate.EmployeeRole</node>
+    <node x="104.84490740740736" y="680.0">com.almundo.challenge.Dispatcher</node>
+    <node x="309.3935185185185" y="0.0">com.almundo.challenge.model.Call</node>
+    <node x="0.0" y="89.5">com.almundo.challenge.enumerate.EmployeeStatus</node>
   </nodes>
   <notes />
-  <edges />
-  <settings layout="Hierarchic Group" zoom="0.793418647166362" x="258.0" y="537.0" />
-  <SelectedNodes />
+  <edges>
+    <edge source="com.almundo.challenge.Dispatcher" target="com.almundo.challenge.enumerate.EmployeeRole">
+      <point x="28.41666666666663" y="-203.0" />
+      <point x="303.761574074074" y="660.0" />
+      <point x="339.8935185185185" y="660.0" />
+      <point x="339.8935185185185" y="272.0" />
+      <point x="268.8935185185185" y="272.0" />
+      <point x="41.0" y="47.5" />
+    </edge>
+    <edge source="com.almundo.challenge.model.Employee" target="com.almundo.challenge.enumerate.EmployeeRole">
+      <point x="21.75" y="-159.0" />
+      <point x="212.7407407407407" y="292.0" />
+      <point x="227.89351851851848" y="292.0" />
+      <point x="0.0" y="47.5" />
+    </edge>
+    <edge source="com.almundo.challenge.model.Employee" target="com.almundo.challenge.model.Call">
+      <point x="65.25" y="-159.0" />
+      <point x="256.2407407407407" y="282.0" />
+      <point x="336.2685185185185" y="282.0" />
+      <point x="-80.625" y="126.0" />
+    </edge>
+    <edge source="com.almundo.challenge.model.Employee" target="com.almundo.challenge.enumerate.EmployeeStatus">
+      <point x="-108.75" y="-159.0" />
+      <point x="82.2407407407407" y="292.0" />
+      <point x="66.0" y="292.0" />
+      <point x="0.0" y="36.5" />
+    </edge>
+    <edge source="com.almundo.challenge.Dispatcher" target="com.almundo.challenge.enumerate.EmployeeStatus">
+      <point x="-142.08333333333337" y="-203.0" />
+      <point x="133.261574074074" y="660.0" />
+      <point x="36.37499999999997" y="660.0" />
+      <point x="36.37499999999997" y="292.0" />
+      <point x="22.0" y="292.0" />
+      <point x="-44.0" y="36.5" />
+    </edge>
+    <edge source="com.almundo.challenge.Dispatcher" target="com.almundo.challenge.model.Call">
+      <point x="142.08333333333337" y="-203.0" />
+      <point x="417.42824074074076" y="660.0" />
+      <point x="454.7685185185185" y="660.0" />
+      <point x="454.7685185185185" y="292.0" />
+      <point x="497.5185185185185" y="292.0" />
+      <point x="80.625" y="126.0" />
+    </edge>
+    <edge source="com.almundo.challenge.Dispatcher" target="com.almundo.challenge.model.Employee">
+      <point x="-28.416666666666686" y="-203.0" />
+      <point x="246.92824074074068" y="660.0" />
+      <point x="256.2407407407407" y="660.0" />
+      <point x="65.25" y="159.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.47468354430379744" x="262.5" y="543.0" />
+  <SelectedNodes>
+    <node>com.almundo.challenge.Dispatcher</node>
+  </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Inner Classes</Category>
