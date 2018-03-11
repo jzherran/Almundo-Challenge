@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/java,intellij
+# Created by https://www.gitignore.io/api/java,intellij,maven
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
@@ -59,8 +59,11 @@ fabric.properties
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
 *.iml
-/.idea/
-# *.ipr
+modules.xml
+.idea/compiler.xml
+.idea/misc.xml
+.idea/modiles.xml
+*.ipr
 
 # Sonarlint plugin
 .idea/sonarlint
@@ -89,5 +92,19 @@ fabric.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
 
-# End of https://www.gitignore.io/api/java,intellij
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+
+# End of https://www.gitignore.io/api/java,intellij,maven

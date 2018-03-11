@@ -5,12 +5,12 @@ package com.almundo.challenge.enumerate;
  */
 public enum EmployeeRole {
 
-  /** */
+  /** Type operator for an employee */
   OPERATOR,
 
-  /** */
+  /** Type supervisor for an employee */
   SUPERVISOR,
 
-  /** */
+  /** Type director for an employee */
   DIRECTOR
 }

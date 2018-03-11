@@ -1,6 +1,5 @@
 package com.almundo.challenge.model;
 
-import com.almundo.challenge.Dispatcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

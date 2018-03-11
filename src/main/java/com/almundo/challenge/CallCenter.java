@@ -11,12 +11,22 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is only a test for not using a Unit test for validate functionality with different
+ * cases or data
+ */
 public class CallCenter {
 
   private static final Logger logger = LoggerFactory.getLogger(CallCenter.class);
 
+  private static final int MIN_TIME_CALL = 5;
+
+  private static final int MAX_TIME_CALL = 15;
+
+  private static final int TOTAL_CALLS = 30;
+
   public static void main(String[] args) throws InterruptedException {
-    List<Call> calls = Call.build(10, 5, 20);
+    List<Call> calls = Call.build(MAX_TIME_CALL, MIN_TIME_CALL, TOTAL_CALLS);
     Dispatcher dispatcher = new Dispatcher(getEmployees());
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -35,7 +45,7 @@ public class CallCenter {
       }
     });
 
-    executorService.awaitTermination(40, TimeUnit.SECONDS);
+    executorService.awaitTermination(MAX_TIME_CALL * 2, TimeUnit.SECONDS);
     dispatcher.stopDispatchingCalls();
     System.exit(0);
   }

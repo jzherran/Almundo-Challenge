@@ -14,22 +14,22 @@ import org.slf4j.LoggerFactory;
 @Data
 public class Employee implements Runnable {
 
-  /** */
+  /** Logger */
   private static final Logger logger = LoggerFactory.getLogger(Employee.class);
 
-  /** */
+  /** Structure for calls completed by the employee */
   private ConcurrentLinkedDeque<Call> completed;
 
-  /** */
+  /** Identifier for employee */
   private String id;
 
-  /** */
+  /** Role associated to this employee */
   private EmployeeRole role;
 
-  /** */
+  /** Status associated to this employee */
   private EmployeeStatus status;
 
-  /** */
+  /** Structure for calls on hold by the employee */
   private ConcurrentLinkedDeque<Call> waiting;
 
   public Employee(String id, EmployeeRole role) {
@@ -41,15 +41,16 @@ public class Employee implements Runnable {
   }
 
   /**
-   *
+   * Run method is always executed and is responsible for starting the process for answer calls
+   * associated by the employee
    */
   @Override public void run() {
     logger.info("Employee [{} - {}] starts to work", getId(), getRole());
     do {
-      if (!waiting.isEmpty()) {
-        Call call = waiting.poll();
+      if (!getWaiting().isEmpty()) {
+        Call call = getWaiting().poll();
         setStatus(EmployeeStatus.IN_CALL);
-        logger.info("Start attempt call by employee [{} - {}]", getId(), getRole());
+        logger.info("Initiate answer call by employee [{} - {}]", getId(), getRole());
         try {
           TimeUnit.SECONDS.sleep(call.getDuration());
         } catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class Employee implements Runnable {
         } finally {
           setStatus(EmployeeStatus.WAIT_FOR_CALL);
         }
-        completed.add(call);
+        getCompleted().add(call);
         logger.info("Finished answer for call {} by employee [{} - {}]", call.getId()
             , getId(), getRole());
       }
@@ -66,28 +67,31 @@ public class Employee implements Runnable {
   }
 
   /**
+   * Returns status associated a this employee
    *
-   * @return
+   * @return the {@link EmployeeStatus}
    */
   public synchronized EmployeeStatus getStatus() {
     return status;
   }
 
   /**
+   * Sets a {@link EmployeeStatus} received
    *
-   * @param status
+   * @param status to set for employee
    */
   public synchronized void setStatus(EmployeeStatus status) {
     this.status = status;
   }
 
   /**
+   * Starts the process for answer call
    *
-   * @param call
+   * @param call the call to respond
    */
-  public synchronized void startAnswerCall(Call call) {
-    waiting.add(call);
-    logger.info("Employee [{} - {}] queues a call of {} seconds", getId(), getRole(),
+  public synchronized void startRespondCall(Call call) {
+    getWaiting().add(call);
+    logger.info("Employee [{} - {}] receive a call of {} seconds", getId(), getRole(),
         call.getDuration());
   }
 }
