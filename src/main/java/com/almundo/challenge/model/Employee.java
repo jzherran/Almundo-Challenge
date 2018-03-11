@@ -2,6 +2,8 @@ package com.almundo.challenge.model;
 
 import com.almundo.challenge.enumerate.EmployeeRole;
 import com.almundo.challenge.enumerate.EmployeeStatus;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 import lombok.Data;
@@ -18,7 +20,7 @@ public class Employee implements Runnable {
   private static final Logger logger = LoggerFactory.getLogger(Employee.class);
 
   /** Structure for calls completed by the employee */
-  private ConcurrentLinkedDeque<Call> completed;
+  private List<Call> completed;
 
   /** Identifier for employee */
   private String id;
@@ -33,7 +35,7 @@ public class Employee implements Runnable {
   private ConcurrentLinkedDeque<Call> waiting;
 
   public Employee(String id, EmployeeRole role) {
-    this.completed = new ConcurrentLinkedDeque<>();
+    this.completed = new ArrayList<>();
     this.id = id;
     this.role = role;
     this.status = EmployeeStatus.WAIT_FOR_CALL;
