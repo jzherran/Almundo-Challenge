@@ -6,9 +6,14 @@ import com.almundo.challenge.model.Call;
 import com.almundo.challenge.model.Employee;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.Data;
 import org.apache.commons.lang3.Validate;
@@ -37,6 +42,8 @@ public class Dispatcher implements Runnable {
   /** Control for enable/disable the dispatch of calls */
   private boolean dispatcherRunning;
 
+  private boolean employeesAvailable;
+
   /** Executor for send a {@link Call} to an {@link Employee} */
   private ExecutorService executor;
 
@@ -45,10 +52,13 @@ public class Dispatcher implements Runnable {
    * @param employees the {@link Employee} to use in the execution
    */
   public Dispatcher(List<Employee> employees) {
+    Validate.notNull(employees);
     this.dequeCalls = new ConcurrentLinkedDeque<>();
     this.dequeEmployees = new ConcurrentLinkedDeque<>(employees);
     this.dispatcherRunning = false;
-    this.executor = Executors.newFixedThreadPool(CAPACITY_CALLS);
+    this.employeesAvailable = true;
+    this.executor = new ThreadPoolExecutor(CAPACITY_CALLS, CAPACITY_CALLS,
+        60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
   }
 
   /**
@@ -60,7 +70,7 @@ public class Dispatcher implements Runnable {
       if (getDequeCalls().isEmpty()) {
         continue;
       } else {
-        Employee employee = findAvailableEmployeeForAttend();
+        Employee employee = findAvailableEmployeeForAnswering();
         if (employee == null) {
           continue;
         }
@@ -102,42 +112,48 @@ public class Dispatcher implements Runnable {
     getExecutor().shutdown();
   }
 
+  private synchronized void setEmployeesAvailable(boolean employeesAvailable) {
+    this.employeesAvailable = employeesAvailable;
+  }
+
   /**
    * Validate the flow predefined for the {@link Dispatcher} and return an {@link Employee}
    * if any that is available to answer the call
    *
    * @return an {@link Employee} if any that is available to answer the call
    */
-  private Employee findAvailableEmployeeForAttend() {
-    Validate.notNull(getDequeEmployees());
+  private Employee findAvailableEmployeeForAnswering() {
+    List<Employee> employeeList = getDequeEmployees().stream().collect(Collectors.toList());
+    Validate.notNull(employeeList);
 
-    List<Employee> employees = getDequeEmployees().stream().filter(employee -> employee.getStatus()
+    List<Employee> available = employeeList.stream().filter(employee -> employee.getStatus()
         .equals(EmployeeStatus.WAIT_FOR_CALL)).collect(Collectors.toList());
 
-    if (employees.isEmpty()) {
+    if (available.isEmpty()) {
+      if (isEmployeesAvailable()) {
+        logger.info("There are no employees available to answer calls");
+        setEmployeesAvailable(false);
+      }
       return null;
+    } else {
+      setEmployeesAvailable(true);
     }
 
-    Optional<Employee> employee = employees.stream()
+    logger.info("Employees wait for a call: {}", available.size());
+    Optional<Employee> employee = available.stream()
         .filter(operator -> operator.getRole().equals(EmployeeRole.OPERATOR)).findAny();
 
-    logger.info("Employees wait for a call: {}", employees.size());
-
     if (!employee.isPresent()) {
-      employee = employees.stream()
+      employee = available.stream()
           .filter(operator -> operator.getRole().equals(EmployeeRole.SUPERVISOR)).findAny();
       if (!employee.isPresent()) {
-        employee = employees.stream()
+        employee = available.stream()
             .filter(supervisor -> supervisor.getRole().equals(EmployeeRole.DIRECTOR)).findAny();
       }
     }
 
-    if (employee.isPresent()) {
-      logger.info("Employee [{} - {}] selected for answer call", employee.get().getId(),
-          employee.get().getRole());
-      return employee.get();
-    }
-
-    return null;
+    logger.info("Employee [{} - {}] selected for answer call", employee.get().getId(),
+        employee.get().getRole());
+    return employee.get();
   }
 }

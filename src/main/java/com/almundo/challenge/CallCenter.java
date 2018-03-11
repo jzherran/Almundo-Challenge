@@ -45,7 +45,7 @@ public class CallCenter {
       }
     });
 
-    executorService.awaitTermination(MAX_TIME_CALL * 2, TimeUnit.SECONDS);
+    executorService.awaitTermination(MAX_TIME_CALL * (TOTAL_CALLS / 10), TimeUnit.SECONDS);
     dispatcher.stopDispatchingCalls();
     System.exit(0);
   }

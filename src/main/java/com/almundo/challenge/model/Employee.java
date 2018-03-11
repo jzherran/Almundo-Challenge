@@ -93,7 +93,7 @@ public class Employee implements Runnable {
    */
   public synchronized void startRespondCall(Call call) {
     getWaiting().add(call);
-    logger.info("Employee [{} - {}] receive a call of {} seconds", getId(), getRole(),
-        call.getDuration());
+    logger.info("Employee [{} - {}] receive a call of [{} - {} seconds]", getId(), getRole(),
+        call.getId(), call.getDuration());
   }
 }
