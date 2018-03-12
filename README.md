@@ -2,13 +2,13 @@
 
 The main idea of this project is to solve a problem with concurrency in a common environment (Call Center), the problem is to receive multiple calls with a limited number of employees.
 
-The proposed solution is developed using mainly the threads in java:
+The solution proposal was developed using mainly threads in Java:
 
-- The `Dispatcher` class developed implements the `Runnable` interface and has 2 `ConcurrentLinkedDeque`, this is used in order to guarantee the use of synchronous resources between the threads, and with that assure the limit of calls in progress concurrently.
+- The `Dispatcher` class implements the `Runnable` interface and has a `ConcurrentLinkedDeque`, this class is used in order to guarantee the use of synchronous resources between the threads, and assure the limit of calls concurrently in progress.
 
-- The `Employee` class developed implements the `Runnable` interface and has once `ConcurrentLinkedDeque`, this structure is used to maintain updated the waiting calls to processing for the 'Employee'. For `Employee`, it was necessary to create an enumeration to control the status of availability and manage with locks into threads.
+- The `Employee` class implements the `Runnable` interface and has a `ConcurrentLinkedDeque`, this structure is used to to keep updated the waiting calls to process for the `Employee`. For the `Employee` class, it was necessary to create an enumeration to control the availability status and manage it with locks into threads.
 
-In this implementation was create a log with descriptions in the most relevant cases, this log describe the process for a call received and this log is show in the getting started item.
+In this implementation, a log was created with descriptions for the most relevant cases, this log describes the process for a received call. An example is displayed in the animation below.
 
 [Model of solution](/info/model.png)
 

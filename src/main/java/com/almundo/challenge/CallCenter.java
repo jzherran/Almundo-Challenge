@@ -23,20 +23,20 @@ public class CallCenter {
 
   private static final int MAX_TIME_CALL = 15;
 
-  private static final int TOTAL_CALLS = 30;
+  private static final int TOTAL_CALLS = 100;
 
   public static void main(String[] args) throws InterruptedException {
     List<Call> calls = Call.build(MAX_TIME_CALL, MIN_TIME_CALL, TOTAL_CALLS);
     Dispatcher dispatcher = new Dispatcher(getEmployees());
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    logger.info("Total employees working {}", dispatcher.getDequeEmployees().size());
+    logger.info("Total employees working {}", dispatcher.getEmployeesList().size());
     dispatcher.startDispatchingCalls();
     TimeUnit.SECONDS.sleep(1);
     executorService.execute(dispatcher);
     TimeUnit.SECONDS.sleep(1);
 
-    calls.stream().forEach(call -> {
+    calls.forEach(call -> {
       dispatcher.dispatch(call);
       try {
         TimeUnit.SECONDS.sleep(1);
@@ -45,7 +45,11 @@ public class CallCenter {
       }
     });
 
-    executorService.awaitTermination(MAX_TIME_CALL * (TOTAL_CALLS / 10), TimeUnit.SECONDS);
+    try {
+      executorService.awaitTermination(MAX_TIME_CALL * (TOTAL_CALLS / 10), TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      logger.error(e.getMessage());
+    }
     dispatcher.stopDispatchingCalls();
     System.exit(0);
   }

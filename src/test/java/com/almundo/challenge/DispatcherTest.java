@@ -33,7 +33,7 @@ public class DispatcherTest {
   public void shouldReturnDispatcher() {
     dispatcher = new Dispatcher(new ArrayList<>());
     assertNotNull(dispatcher);
-    assertTrue(dispatcher.getDequeEmployees().isEmpty());
+    assertTrue(dispatcher.getEmployeesList().isEmpty());
   }
 
   @Test
@@ -44,7 +44,7 @@ public class DispatcherTest {
     startCalls(calls);
 
     dispatcher.stopDispatchingCalls();
-    assertEquals(10, dispatcher.getDequeEmployees().stream()
+    assertEquals(10, dispatcher.getEmployeesList().stream()
         .mapToInt(value -> value.getCompleted().size()).sum());
   }
 
@@ -60,7 +60,7 @@ public class DispatcherTest {
     when(mockEmployee.getStatus()).thenReturn(EmployeeStatus.WAIT_FOR_CALL);
     doThrow(new RuntimeException()).when(mockEmployee).startRespondCall(any(Call.class));
 
-    startCalls(calls, 10);
+    startCalls(calls, 0);
 
     dispatcher.stopDispatchingCalls();
     assertEquals(5, dispatcher.getDequeCalls().size());
@@ -81,7 +81,7 @@ public class DispatcherTest {
 
     dispatcher.stopDispatchingCalls();
     assertEquals(10, dispatcher.getDequeCalls().size());
-    assertEquals(1, dispatcher.getDequeEmployees().stream()
+    assertEquals(1, dispatcher.getEmployeesList().stream()
         .mapToInt(value -> (value.getStatus().equals(EmployeeStatus.IN_CALL)?1:0)).sum());
   }
 
@@ -96,7 +96,7 @@ public class DispatcherTest {
 
     dispatcher.stopDispatchingCalls();
     assertTrue(dispatcher.getDequeCalls().isEmpty());
-    assertEquals(10, dispatcher.getDequeEmployees().stream()
+    assertEquals(10, dispatcher.getEmployeesList().stream()
         .mapToInt(value -> value.getCompleted().size()).sum());
   }
 
@@ -110,7 +110,7 @@ public class DispatcherTest {
     TimeUnit.SECONDS.sleep(1);
     executorService.execute(dispatcher);
     TimeUnit.SECONDS.sleep(1);
-    calls.stream().forEach(c -> {
+    calls.forEach(c -> {
       dispatcher.dispatch(c);
       try {
         TimeUnit.SECONDS.sleep(1);
@@ -118,7 +118,12 @@ public class DispatcherTest {
         e.getStackTrace();
       }
     });
-    executorService.awaitTermination(timeout, TimeUnit.SECONDS);
+
+    if (timeout > 0) {
+      executorService.awaitTermination(timeout, TimeUnit.SECONDS);
+    } else {
+      executorService.shutdownNow();
+    }
   }
 
   private List<Employee> getEmployees() {

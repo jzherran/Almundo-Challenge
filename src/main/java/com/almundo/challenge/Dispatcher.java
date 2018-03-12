@@ -4,16 +4,13 @@ import com.almundo.challenge.enumerate.EmployeeRole;
 import com.almundo.challenge.enumerate.EmployeeStatus;
 import com.almundo.challenge.model.Call;
 import com.almundo.challenge.model.Employee;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.Data;
 import org.apache.commons.lang3.Validate;
@@ -37,7 +34,7 @@ public class Dispatcher implements Runnable {
   private ConcurrentLinkedDeque<Call> dequeCalls;
 
   /** Structure for manage employees */
-  private ConcurrentLinkedDeque<Employee> dequeEmployees;
+  private List<Employee> employeesList;
 
   /** Control for enable/disable the dispatch of calls */
   private boolean dispatcherRunning;
@@ -55,9 +52,9 @@ public class Dispatcher implements Runnable {
   public Dispatcher(List<Employee> employees) {
     Validate.notNull(employees);
     this.dequeCalls = new ConcurrentLinkedDeque<>();
-    this.dequeEmployees = new ConcurrentLinkedDeque<>(employees);
     this.dispatcherRunning = false;
     this.employeesAvailable = true;
+    this.employeesList = Collections.synchronizedList(employees);
     this.executor = Executors.newFixedThreadPool(CAPACITY_CALLS);
   }
 
@@ -65,7 +62,7 @@ public class Dispatcher implements Runnable {
    * Runs dispatcher only if it was start before
    */
   @Override public void run() {
-    logger.info("Run dispatcher with {} employees", getDequeEmployees().size());
+    logger.info("Run dispatcher with {} employees", getEmployeesList().size());
     do {
       if (getDequeCalls().isEmpty()) {
         continue;
@@ -97,21 +94,26 @@ public class Dispatcher implements Runnable {
   }
 
   /**
-   * Start dispatcher
+   * Starts dispatcher
    */
   public synchronized void startDispatchingCalls() {
     setDispatcherRunning(true);
-    getDequeEmployees().forEach(employee -> getExecutor().execute(employee));
+    getEmployeesList().forEach(employee -> getExecutor().execute(employee));
   }
 
   /**
-   * Stop dispatcher
+   * Stops dispatcher
    */
   public synchronized void stopDispatchingCalls() {
     setDispatcherRunning(false);
     getExecutor().shutdown();
   }
 
+  /**
+   * Sets value for employees available if exist in the list any employee with status WAIT_FOR_CALL
+   *
+   * @param employeesAvailable the boolean value
+   */
   private synchronized void setEmployeesAvailable(boolean employeesAvailable) {
     this.employeesAvailable = employeesAvailable;
   }
@@ -123,13 +125,13 @@ public class Dispatcher implements Runnable {
    * @return an {@link Employee} if any that is available to answer the call
    */
   private Employee findAvailableEmployeeForAnswering() {
-    List<Employee> employeeList = getDequeEmployees().stream().collect(Collectors.toList());
-    Validate.notNull(employeeList);
+    Validate.notNull(getEmployeesList());
 
-    List<Employee> available = employeeList.stream().filter(employee -> employee.getStatus()
+    List<Employee> employeesAvailable = getEmployeesList().stream()
+        .filter(employee -> employee.getStatus()
         .equals(EmployeeStatus.WAIT_FOR_CALL)).collect(Collectors.toList());
 
-    if (available.isEmpty()) {
+    if (employeesAvailable.isEmpty()) {
       if (isEmployeesAvailable()) {
         logger.info("There are no employees available to answer calls");
         setEmployeesAvailable(false);
@@ -139,15 +141,15 @@ public class Dispatcher implements Runnable {
       setEmployeesAvailable(true);
     }
 
-    logger.info("Employees wait for a call: {}", available.size());
-    Optional<Employee> employee = available.stream()
+    logger.info("Employees wait for a call: {}", employeesAvailable.size());
+    Optional<Employee> employee = employeesAvailable.stream()
         .filter(operator -> operator.getRole().equals(EmployeeRole.OPERATOR)).findAny();
 
     if (!employee.isPresent()) {
-      employee = available.stream()
+      employee = employeesAvailable.stream()
           .filter(operator -> operator.getRole().equals(EmployeeRole.SUPERVISOR)).findAny();
       if (!employee.isPresent()) {
-        employee = available.stream()
+        employee = employeesAvailable.stream()
             .filter(supervisor -> supervisor.getRole().equals(EmployeeRole.DIRECTOR)).findAny();
       }
     }
